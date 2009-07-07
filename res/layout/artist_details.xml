@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+>
+	<TextView
+		android:id="@+id/artist"
+		android:layout_width="fill_parent"
+	    android:layout_height="?android:attr/listPreferredItemHeight"
+	    android:gravity="center"
+	    android:textAppearance="?android:attr/textAppearanceLarge"
+	/>
+	<TextView
+		android:id="@+id/bio"
+		android:paddingLeft="20dip"
+		android:paddingRight="20dip"
+		android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:textColor="#FFF"
+	/>
+	<TextView
+		android:id="@+id/location"
+		android:paddingRight="20dip"
+		android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:gravity="right"
+	/>
+	<ListView
+		android:id="@android:id/list"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+	/>
+</LinearLayout>

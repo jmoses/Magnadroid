@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Magnatune</string>
+    
+    <!-- generic text strings -->
+    <string name="loading">Loading...</string>
+    <string name="search">Search</string>
+    <string name="currently_playing">Currently playing: </string>
+    <string name="buffering">Buffering, please wait...</string>
+    
+    <!-- titles -->
+    <string name="title_albumlist">Magnatune - Albums</string>
+    <string name="title_genrelist">Magnatune - Genres</string>
+    <string name="title_artistlist">Magnatune - Artists</string>
+    <string name="title_search">Magnatune - Search</string>
+    
+    <!-- dialog strings -->
+    <string name="error_loading_title">Network error!</string>
+    <string name="error_loading_message">Unable to contact the server. Try cycling your wifi connection (if you are using wifi)</string>
+    
+    <!-- Album browser -->
+    <string name="purchase">Purchase</string>
+</resources>

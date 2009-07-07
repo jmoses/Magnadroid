@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+>
+	<ImageView
+		android:src="@drawable/banner"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	/>
+	<TableLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:stretchColumns="true"
+	>
+		<TableRow>
+			<Button
+				android:text="Genre"
+				android:id="@+id/genre"
+			/>
+			<Button
+				android:text="Artist"
+				android:id="@+id/artist"
+			/>
+		</TableRow>
+		<TableRow>
+			<Button
+				android:text="Album"
+				android:id="@+id/album"
+			/>
+			<Button
+				android:text="Search"
+				android:id="@+id/search"
+			/>
+		</TableRow>
+	</TableLayout>
+</LinearLayout>
