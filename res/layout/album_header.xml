@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+>
+	<com.evancharlton.magnatune.views.RemoteImageView
+		android:id="@+id/artwork"
+		android:layout_width="100px"
+		android:layout_height="100px"
+		android:src="@drawable/icon"
+	/>
+	<TextView
+		android:layout_toRightOf="@+id/artwork"
+		android:id="@+id/album"
+		android:paddingLeft="5dip"
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_vertical"
+	    android:textAppearance="?android:attr/textAppearanceLarge"
+	    android:ellipsize="marquee"
+	    android:focusable="true"
+	/>
+	<TextView
+		android:id="@+id/artist"
+		android:layout_toRightOf="@+id/artwork"
+		android:layout_below="@+id/album"
+		android:paddingLeft="15dip"
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:ellipsize="marquee"
+	/>
+	<Button
+		android:layout_below="@+id/artist"
+		android:id="@+id/buy"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/purchase"
+		android:layout_marginLeft="103px"
+	/>
+</RelativeLayout>

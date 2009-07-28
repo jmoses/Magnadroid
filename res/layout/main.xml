@@ -10,30 +10,52 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	<TableLayout
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:orientation="horizontal"
+	>
+		<Button
+			android:text="Genre"
+			android:id="@+id/genre"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+		/>
+		<Button
+			android:text="Artist"
+			android:id="@+id/artist"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+		/>
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:orientation="horizontal"
+	>
+		<Button
+			android:text="Album"
+			android:id="@+id/album"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+		/>
+		<Button
+			android:text="Search"
+			android:id="@+id/search"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+		/>
+	</LinearLayout>
+	<Button
+		android:id="@+id/downloads"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:stretchColumns="true"
-	>
-		<TableRow>
-			<Button
-				android:text="Genre"
-				android:id="@+id/genre"
-			/>
-			<Button
-				android:text="Artist"
-				android:id="@+id/artist"
-			/>
-		</TableRow>
-		<TableRow>
-			<Button
-				android:text="Album"
-				android:id="@+id/album"
-			/>
-			<Button
-				android:text="Search"
-				android:id="@+id/search"
-			/>
-		</TableRow>
-	</TableLayout>
+		android:text="@string/check_for_downloads"
+	/>
 </LinearLayout>

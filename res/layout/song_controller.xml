@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:magnatune="http://schemas.android.com/apk/res/com.evancharlton.magnatune"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+>
+	<com.evancharlton.magnatune.views.ToggleImageButton
+		android:id="@+id/playpause"
+		android:layout_width="48px"
+		android:layout_height="48px"
+		magnatune:imageOn="@drawable/playback_play"
+		magnatune:imageOff="@drawable/playback_pause"
+	/>
+	<SeekBar
+		android:id="@+id/seekbar"
+		android:layout_toRightOf="@+id/playpause"
+		android:layout_alignBaseline="@+id/playpause"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+	/>
+</RelativeLayout>

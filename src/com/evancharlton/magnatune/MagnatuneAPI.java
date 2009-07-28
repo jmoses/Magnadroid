@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import org.apache.http.HttpResponse;
 
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
@@ -22,9 +18,15 @@ public class MagnatuneAPI {
 	public static final String EXTRA_FILTER = "filter";
 	public static final String EXTRA_TITLE = "title";
 
-	private static final String CACHE_DIRECTORY = "/.magnatune-cache/";
+	public static final String MUSIC_DIRECTORY = Environment.getExternalStorageDirectory() + "/Magnatune/";
+	public static final String CACHE_DIRECTORY = Environment.getExternalStorageDirectory() + "/.magnatune-cache/";
+
+	private static StringBuilder builder = new StringBuilder();
 
 	private MagnatuneAPI() {
+		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			new File(CACHE_DIRECTORY).mkdirs();
+		}
 	}
 
 	public static String getFilterUrl(int page, String group, String filter) {
@@ -46,10 +48,6 @@ public class MagnatuneAPI {
 		return String.format("http://he3.magnatune.com/music/%s/%s/cover_%d.jpg", artist, album, size).replaceAll("\\s", "%20");
 	}
 
-	public static String getContent(HttpResponse response) throws IllegalStateException, IOException {
-		return getContent(response.getEntity().getContent());
-	}
-
 	public static String getContent(InputStream is) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(is));
@@ -62,32 +60,18 @@ public class MagnatuneAPI {
 	}
 
 	public static String getMP3Url(String mp3) {
-		return String.format("http://he3.magnatune.com/all/%s", mp3);
-	}
-
-	private static String md5(String msg) throws NoSuchAlgorithmException {
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.reset();
-		md.update(msg.getBytes());
-		byte[] digest = md.digest();
-
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < digest.length; i++) {
-			String hex = Integer.toHexString(0xFF & digest[i]);
-			if (hex.length() == 1) {
-				sb.append("0");
-			}
-			sb.append(hex);
-		}
-		return sb.toString();
+		return String.format("http://he3.magnatune.com/all/%s", mp3.replace(".mp3", "-lofi.mp3"));
 	}
 
 	public static String getCacheFileName(String url) {
-		try {
-			return Environment.getExternalStorageDirectory() + CACHE_DIRECTORY + md5(url) + ".jpg";
-		} catch (NoSuchAlgorithmException e) {
-			return Environment.getExternalStorageDirectory() + CACHE_DIRECTORY + url.replaceAll("[^a-zA-Z0-9]+", "") + ".jpg";
-		}
+		builder.setLength(0);
+		builder.append(CACHE_DIRECTORY);
+		builder.append(url.hashCode()).append(".jpg");
+		return builder.toString();
+	}
+
+	public static String getCachedCoverArt(String artist, String album, int size) {
+		return getCacheFileName(getCoverArtUrl(artist, album, size));
 	}
 
 	public static Drawable getCachedCoverArt(String url) {
@@ -120,5 +104,13 @@ public class MagnatuneAPI {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static String getPurchaseUrl(String sku) {
+		return String.format("https://magnatune.com/buy/buy_dl_pp?sku=%s", sku);
+	}
+
+	public static String getDownloadUrl(String email) {
+		return String.format("http://magnatune.com/buy/redownload_xml?email=%s", email);
 	}
 }

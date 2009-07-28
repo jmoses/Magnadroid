@@ -46,7 +46,7 @@ public class ArtistList extends LazyActivity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-				URL request = new URL(MagnatuneAPI.getFilterUrl(mPage, "artists", null));
+				URL request = new URL(MagnatuneAPI.getFilterUrl(activity.mPage, "artists", null));
 				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
 				JSONArray artists = new JSONArray(jsonRaw);
 				JSONObject artistObject;
@@ -67,6 +67,8 @@ public class ArtistList extends LazyActivity {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
 				e.printStackTrace();
 			}
 			return false;

@@ -26,11 +26,13 @@ public class ArtistBrowser extends LazyActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		mFrom = new String[] {
 				Album.TITLE,
-				Album.GENRE
+				Album.GENRE,
+				Album.ARTWORK
 		};
 		mTo = new int[] {
 				android.R.id.text1,
-				android.R.id.text2
+				android.R.id.text2,
+				android.R.id.icon
 		};
 
 		Intent i = getIntent();
@@ -82,7 +84,7 @@ public class ArtistBrowser extends LazyActivity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-				URL request = new URL(MagnatuneAPI.getFilterUrl(mPage, "artists", ((ArtistBrowser) activity).mArtistId));
+				URL request = new URL(MagnatuneAPI.getFilterUrl(activity.mPage, "artists", ((ArtistBrowser) activity).mArtistId));
 				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
 				JSONArray albums = new JSONArray(jsonRaw);
 				JSONObject albumObject;

@@ -3,10 +3,14 @@ package com.evancharlton.magnatune;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 public class Magnatune extends Activity {
+	private static final int MENU_SETTINGS = Menu.FIRST;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,5 +43,28 @@ public class Magnatune extends Activity {
 				startActivity(new Intent(Magnatune.this, SearchActivity.class));
 			}
 		});
+
+		((Button) findViewById(R.id.downloads)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(Magnatune.this, DownloadList.class));
+			}
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.menu_settings).setIcon(R.drawable.ic_menu_preferences);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_SETTINGS:
+				startActivity(new Intent(this, Settings.class));
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+>
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="@string/pref_background_downloading"
+		android:title="@string/background_downloading"
+		android:summaryOn="@string/background_downloading_on"
+		android:summaryOff="@string/background_downloading_off"
+	/>
+	<EditTextPreference
+		android:key="@string/pref_email_address"
+		android:title="@string/email_address_title"
+		android:summary="@string/email_address_summary"
+		android:inputType="textEmailAddress"
+	/>
+</PreferenceScreen>

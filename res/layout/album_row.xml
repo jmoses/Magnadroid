@@ -3,7 +3,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="?android:attr/listPreferredItemHeight"
 	android:padding="6dip">
-	<ImageView
+	<com.evancharlton.magnatune.views.RemoteImageView
 		android:id="@android:id/icon"
 		android:layout_width="50px"
 		android:layout_height="50px"

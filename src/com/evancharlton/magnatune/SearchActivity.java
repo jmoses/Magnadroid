@@ -16,11 +16,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 
 import com.evancharlton.magnatune.objects.Album;
 import com.evancharlton.magnatune.objects.Artist;
@@ -33,6 +32,7 @@ public class SearchActivity extends LazyActivity {
 
 	private EditText mQuery;
 	private Button mSearch;
+	private InputMethodManager mInputMethodMgr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,22 +46,7 @@ public class SearchActivity extends LazyActivity {
 				android.R.id.text2,
 				android.R.id.icon
 		};
-		super.onCreate(savedInstanceState, R.layout.search, R.layout.search_row);
-
-		mAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-			@Override
-			public boolean setViewValue(View view, Object data, String textRepresentation) {
-				if (view instanceof ImageView) {
-					if (textRepresentation.length() > 0) {
-						view.setVisibility(View.VISIBLE);
-					} else {
-						view.setVisibility(View.GONE);
-					}
-					return true;
-				}
-				return false;
-			}
-		});
+		super.onCreate(savedInstanceState, R.layout.search, R.layout.album_row);
 
 		mQuery = (EditText) findViewById(R.id.query);
 		mSearch = (Button) findViewById(R.id.search);
@@ -96,6 +81,8 @@ public class SearchActivity extends LazyActivity {
 				return false;
 			}
 		});
+
+		mInputMethodMgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 	}
 
 	@Override
@@ -120,6 +107,7 @@ public class SearchActivity extends LazyActivity {
 		if (mLoadTask.getStatus() == AsyncTask.Status.RUNNING) {
 			mLoadTask.cancel(true);
 		}
+		mInputMethodMgr.hideSoftInputFromWindow(mSearch.getWindowToken(), 0);
 		mLoadTask = newLoadTask();
 		setTaskActivity();
 		if (mLoadTask.getStatus() == AsyncTask.Status.PENDING) {
@@ -157,9 +145,10 @@ public class SearchActivity extends LazyActivity {
 						resultInfo.put(SearchResult.TITLE, title);
 						if (SearchResult.MODEL_ALBUM.equals(model)) {
 							resultInfo.put(Album.TITLE, title);
-							resultInfo.put(Album.ARTIST, resultObject.getString("artist_text"));
+							String artist = resultObject.getString("artist_text");
+							resultInfo.put(Album.ARTIST, artist);
 							resultInfo.put(Album.ID, id);
-							resultInfo.put(SearchResult.ICON_URL, "FIXME");
+							resultInfo.put(SearchResult.ICON_URL, MagnatuneAPI.getCoverArtUrl(artist, title, 50));
 							resultInfo.put(SearchResult.SUBTEXT, String.format("%s (%s)", resultObject.getString("artist_text"), resultObject.getString("genre_text")));
 						} else if (SearchResult.MODEL_ARTIST.equals(model)) {
 							resultInfo.put(Artist.NAME, resultObject.getString("title"));
