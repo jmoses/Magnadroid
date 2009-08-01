@@ -6,6 +6,8 @@ public class Song {
 	public static final String TRACK = "song_track";
 	public static final String ARTIST = "song_artist";
 	public static final String ARTIST_ID = "song_artistId";
+	public static final String ALBUM = "song_album";
+	public static final String ALBUM_ID = "song_albumId";
 	public static final String MP3 = "song_mp3";
 	public static final String DURATION = "song_duration";
 	public static final String DURATION_TEXT = "song_durationText";

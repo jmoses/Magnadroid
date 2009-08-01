@@ -18,6 +18,7 @@
     
     <!-- titles -->
     <string name="title_albumlist">Magnatune - Albums</string>
+    <string name="title_latestalbums">Magnatune - Newest albums</string>
     <string name="title_genrelist">Magnatune - Genres</string>
     <string name="title_artistlist">Magnatune - Artists</string>
     <string name="title_search">Magnatune - Search</string>
@@ -38,6 +39,8 @@
     
     <!-- menu strings -->
     <string name="menu_settings">Preferences</string>
+    <string name="menu_more_by_artist">More by %1$s</string>
+    <string name="menu_more_by_genre">More %1$s music</string>
     
     <!-- preference strings -->
     <string name="pref_background_downloading">background downloading</string>

@@ -20,6 +20,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".AlbumList" android:label="@string/title_albumlist"/>
+		<activity android:name=".LatestAlbums" android:label="@string/title_latestalbums"/>
 		<activity android:name=".GenreList" android:label="@string/title_genrelist"/>
 		<activity android:name=".ArtistList" android:label="@string/title_artistlist"/>
 		<activity android:name=".SearchActivity" android:label="@string/title_search"/>

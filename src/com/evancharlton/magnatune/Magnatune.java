@@ -50,6 +50,13 @@ public class Magnatune extends Activity {
 				startActivity(new Intent(Magnatune.this, DownloadList.class));
 			}
 		});
+
+		((Button) findViewById(R.id.newest)).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(Magnatune.this, LatestAlbums.class));
+			}
+		});
 	}
 
 	@Override

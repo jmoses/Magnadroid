@@ -1,6 +1,7 @@
 package com.evancharlton.magnatune.objects;
 
-public class Artist {
+public class Artist extends Model {
+	public static final String MODEL = "magnatune.artist";
 	public static final String ID = "artist_id";
 	public static final String NAME = "artist_name";
 	public static final String BIO = "artist_bio";

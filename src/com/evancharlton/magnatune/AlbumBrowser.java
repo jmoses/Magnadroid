@@ -14,12 +14,15 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.evancharlton.magnatune.objects.Album;
+import com.evancharlton.magnatune.objects.Artist;
 import com.evancharlton.magnatune.objects.Song;
 import com.evancharlton.magnatune.views.RemoteImageView;
 import com.evancharlton.magnatune.views.SongController;
@@ -31,8 +34,10 @@ public class AlbumBrowser extends LazyActivity {
 	protected Button mPurchaseButton;
 
 	protected String mAlbumId;
+	protected String mArtistId;
 	protected String mArtist;
 	protected String mAlbum;
+	protected String mGenre;
 
 	protected SongController mController;
 	protected DecimalFormat mSecondsFormat = new DecimalFormat("00");
@@ -63,6 +68,12 @@ public class AlbumBrowser extends LazyActivity {
 		if (mAlbumId == null) {
 			mAlbumId = intent.getStringExtra(Album.ID);
 		}
+		if (mArtistId == null) {
+			mArtistId = intent.getStringExtra(Artist.ID);
+		}
+		if (mGenre == null) {
+			mGenre = intent.getStringExtra(Album.GENRE);
+		}
 
 		super.onCreate(savedInstanceState, layoutRes, android.R.layout.simple_list_item_2);
 
@@ -86,6 +97,26 @@ public class AlbumBrowser extends LazyActivity {
 		mArtwork.setLocalURI(MagnatuneAPI.getCacheFileName(url));
 		mArtwork.setRemoteURI(url);
 		mArtwork.loadImage();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, MENU_ARTIST, Menu.NONE, format(R.string.menu_more_by_artist, mArtist));
+		menu.add(Menu.NONE, MENU_GENRE, Menu.NONE, format(R.string.menu_more_by_genre, mGenre));
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case MENU_ARTIST:
+				startActivity(new Intent(this, ArtistBrowser.class).putExtra(Artist.ID, mArtistId));
+				return true;
+			case MENU_GENRE:
+				startActivity(new Intent(this, AlbumList.class).putExtra(MagnatuneAPI.EXTRA_FILTER, mGenre).putExtra(MagnatuneAPI.EXTRA_GROUP, "genres"));
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

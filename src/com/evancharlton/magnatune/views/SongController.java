@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -78,6 +79,11 @@ public class SongController extends RelativeLayout {
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
 	protected void finalize() throws Throwable {
 		freeWakeLock();
 		mMediaPlayer.release();
@@ -110,8 +116,12 @@ public class SongController extends RelativeLayout {
 
 	public void destroy() {
 		freeWakeLock();
-		if (mMediaPlayer.isPlaying()) {
-			mMediaPlayer.stop();
+		try {
+			if (mMediaPlayer.isPlaying()) {
+				mMediaPlayer.stop();
+			}
+		} catch (IllegalStateException e) {
+			// noop
 		}
 		mMediaPlayer.release();
 		mSeekThread.cancel();

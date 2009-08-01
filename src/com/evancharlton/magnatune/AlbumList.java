@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.evancharlton.magnatune.objects.Album;
+import com.evancharlton.magnatune.objects.Artist;
 
 public class AlbumList extends LazyActivity {
 	protected String mGroup = "albums";
@@ -57,7 +58,7 @@ public class AlbumList extends LazyActivity {
 	}
 
 	@Override
-	public LoadTask newLoadTask() {
+	protected LoadTask newLoadTask() {
 		return new LoadAlbumsTask();
 	}
 
@@ -66,12 +67,16 @@ public class AlbumList extends LazyActivity {
 		mLoadTask.activity = this;
 	}
 
+	protected String getUrl() {
+		return MagnatuneAPI.getFilterUrl(mPage, mGroup, mFilter);
+	}
+
 	protected static class LoadAlbumsTask extends LoadTask {
 		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
 			AlbumList activity = (AlbumList) super.activity;
-			String url = MagnatuneAPI.getFilterUrl(activity.mPage, activity.mGroup, activity.mFilter);
+			String url = activity.getUrl();
 			try {
 				URL request = new URL(url);
 				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
@@ -85,6 +90,7 @@ public class AlbumList extends LazyActivity {
 					albumObject = albumObject.getJSONObject("fields");
 					String album = albumObject.getString("title");
 					albumInfo.put(Album.TITLE, album);
+					albumInfo.put(Artist.ID, albumObject.getString("artist"));
 					String artist = albumObject.getString("artist_text");
 					albumInfo.put(Album.ARTIST, artist);
 					albumInfo.put(Album.SKU, albumObject.getString("sku"));

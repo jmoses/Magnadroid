@@ -24,6 +24,8 @@ import android.widget.EditText;
 import com.evancharlton.magnatune.objects.Album;
 import com.evancharlton.magnatune.objects.Artist;
 import com.evancharlton.magnatune.objects.SearchResult;
+import com.evancharlton.magnatune.objects.Song;
+import com.evancharlton.magnatune.views.SongController;
 
 public class SearchActivity extends LazyActivity {
 	private static final String TAG = "Magnatune_SearchActivity";
@@ -33,6 +35,7 @@ public class SearchActivity extends LazyActivity {
 	private EditText mQuery;
 	private Button mSearch;
 	private InputMethodManager mInputMethodMgr;
+	private SongController mController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class SearchActivity extends LazyActivity {
 
 		mQuery = (EditText) findViewById(R.id.query);
 		mSearch = (Button) findViewById(R.id.search);
+		mController = (SongController) findViewById(R.id.controller);
 
 		mSearch.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -99,7 +103,15 @@ public class SearchActivity extends LazyActivity {
 		} else if (SearchResult.MODEL_ARTIST.equals(model)) {
 			startActivityForPosition(ArtistBrowser.class, position);
 		} else if (SearchResult.MODEL_SONG.equals(model)) {
-			// TODO
+			try {
+				mController.autoPlay(MagnatuneAPI.getMP3Url(info.get(Song.MP3)));
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -142,10 +154,12 @@ public class SearchActivity extends LazyActivity {
 
 						resultObject = resultObject.getJSONObject("fields");
 						String title = resultObject.getString("title");
+						String artist;
+						String album;
 						resultInfo.put(SearchResult.TITLE, title);
 						if (SearchResult.MODEL_ALBUM.equals(model)) {
 							resultInfo.put(Album.TITLE, title);
-							String artist = resultObject.getString("artist_text");
+							artist = resultObject.getString("artist_text");
 							resultInfo.put(Album.ARTIST, artist);
 							resultInfo.put(Album.ID, id);
 							resultInfo.put(SearchResult.ICON_URL, MagnatuneAPI.getCoverArtUrl(artist, title, 50));
@@ -156,7 +170,14 @@ public class SearchActivity extends LazyActivity {
 							resultInfo.put(Artist.ID, id);
 							resultInfo.put(SearchResult.SUBTEXT, resultObject.getString("bio"));
 						} else if (SearchResult.MODEL_SONG.equals(model)) {
-							resultInfo.put(SearchResult.SUBTEXT, resultObject.getString("artist_text") + " - " + resultObject.getString("album_text"));
+							artist = resultObject.getString("artist_text");
+							album = resultObject.getString("album_text");
+							resultInfo.put(SearchResult.SUBTEXT, artist + " - " + album);
+							resultInfo.put(Song.ARTIST, artist);
+							resultInfo.put(Song.ARTIST_ID, resultObject.getString("artist"));
+							resultInfo.put(Song.ALBUM, album);
+							resultInfo.put(Song.ALBUM_ID, resultObject.getString("album"));
+							resultInfo.put(Song.MP3, resultObject.getString("mp3"));
 						}
 						publishProgress(resultInfo);
 					}

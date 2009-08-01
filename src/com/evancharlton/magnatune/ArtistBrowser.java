@@ -15,12 +15,19 @@ import android.widget.TextView;
 
 import com.evancharlton.magnatune.objects.Album;
 import com.evancharlton.magnatune.objects.Artist;
+import com.evancharlton.magnatune.objects.Model;
 
 public class ArtistBrowser extends LazyActivity {
 	private String mArtistId = null;
 	private TextView mNameText;
 	private TextView mBioText;
 	private TextView mLocationText;
+
+	private String mName;
+	private String mBio;
+	private String mCity;
+	private String mCountry;
+	private String mState;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +51,32 @@ public class ArtistBrowser extends LazyActivity {
 		mBioText = (TextView) findViewById(R.id.bio);
 		mLocationText = (TextView) findViewById(R.id.location);
 
-		String name = i.getStringExtra(Artist.NAME);
-		mNameText.setText(name);
-		setTitle(name);
-		mBioText.setText(i.getStringExtra(Artist.BIO));
-		String location = "";
-		String city = i.getStringExtra(Artist.CITY);
-		String country = i.getStringExtra(Artist.COUNTRY);
-		String state = i.getStringExtra(Artist.STATE);
+		mName = i.getStringExtra(Artist.NAME);
+		mBio = i.getStringExtra(Artist.BIO);
+		mCity = i.getStringExtra(Artist.CITY);
+		mCountry = i.getStringExtra(Artist.COUNTRY);
+		mState = i.getStringExtra(Artist.STATE);
 
-		location = country;
-		if (state != null && state.length() > 0) {
-			location = state + ", " + location;
+		if (mName == null) {
+			mName = "Loading ...";
+			mBio = "Loading artist, please wait ...";
 		}
-		if (city != null && city.length() > 0) {
-			location = city + ", " + location;
+
+		setDetails();
+	}
+
+	private void setDetails() {
+		mNameText.setText(mName);
+		setTitle(mName);
+		mBioText.setText(mBio);
+		String location = "";
+
+		location = mCountry;
+		if (mState != null && mState.length() > 0) {
+			location = mState + ", " + location;
+		}
+		if (mCity != null && mCity.length() > 0) {
+			location = mCity + ", " + location;
 		}
 
 		mLocationText.setText(location);
@@ -91,16 +109,26 @@ public class ArtistBrowser extends LazyActivity {
 				for (int i = 0; i < albums.length(); i++) {
 					HashMap<String, String> albumInfo = new HashMap<String, String>();
 					albumObject = albums.getJSONObject(i);
-					albumInfo.put(Album.ID, albumObject.getString("pk"));
-
-					albumObject = albumObject.getJSONObject("fields");
-					String album = albumObject.getString("title");
-					albumInfo.put(Album.TITLE, album);
-					String artist = albumObject.getString("artist_text");
-					albumInfo.put(Album.ARTIST, artist);
-					albumInfo.put(Album.SKU, albumObject.getString("sku"));
-					albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
-					albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
+					String type = albumObject.getString("model");
+					albumInfo.put(Model.TYPE, type);
+					if (Artist.MODEL.equals(type)) {
+						albumObject = albumObject.getJSONObject("fields");
+						albumInfo.put(Artist.NAME, albumObject.getString("title"));
+						albumInfo.put(Artist.BIO, albumObject.getString("bio"));
+						albumInfo.put(Artist.CITY, albumObject.getString("city"));
+						albumInfo.put(Artist.COUNTRY, albumObject.getString("country"));
+						albumInfo.put(Artist.STATE, albumObject.getString("state"));
+					} else {
+						albumInfo.put(Album.ID, albumObject.getString("pk"));
+						albumObject = albumObject.getJSONObject("fields");
+						String album = albumObject.getString("title");
+						albumInfo.put(Album.TITLE, album);
+						String artist = albumObject.getString("artist_text");
+						albumInfo.put(Album.ARTIST, artist);
+						albumInfo.put(Album.SKU, albumObject.getString("sku"));
+						albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
+						albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
+					}
 					publishProgress(albumInfo);
 				}
 				return true;
@@ -108,6 +136,22 @@ public class ArtistBrowser extends LazyActivity {
 				e.printStackTrace();
 			}
 			return false;
+		}
+
+		@Override
+		protected void onProgressUpdate(HashMap<String, String>... updates) {
+			String model = updates[0].get(Model.TYPE);
+			if (model == null || Album.MODEL.equals(model)) {
+				super.onProgressUpdate(updates);
+			} else {
+				ArtistBrowser activity = (ArtistBrowser) super.activity;
+				activity.mName = updates[0].get(Artist.NAME);
+				activity.mBio = updates[0].get(Artist.BIO);
+				activity.mCity = updates[0].get(Artist.CITY);
+				activity.mCountry = updates[0].get(Artist.COUNTRY);
+				activity.mState = updates[0].get(Artist.STATE);
+				activity.setDetails();
+			}
 		}
 	}
 }

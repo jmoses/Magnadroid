@@ -17,12 +17,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public abstract class LazyActivity extends Activity implements OnItemClickListener {
 	protected static final int DIALOG_ERROR_LOADING = 10;
+
+	protected static final int MENU_ARTIST = Menu.FIRST;
+	protected static final int MENU_GENRE = Menu.FIRST + 1;
 
 	protected ListView mList;
 	protected LazyAdapter mAdapter;
@@ -61,6 +65,10 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 		if (mLoadTask != null && mLoadTask.getStatus() == AsyncTask.Status.PENDING) {
 			mLoadTask.execute();
 		}
+	}
+
+	protected String format(int resId, Object... args) {
+		return String.format(getString(resId, args));
 	}
 
 	@SuppressWarnings("unchecked")
