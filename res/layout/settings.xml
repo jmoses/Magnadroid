@@ -5,13 +5,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
 >
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="@string/pref_background_downloading"
-		android:title="@string/background_downloading"
-		android:summaryOn="@string/background_downloading_on"
-		android:summaryOff="@string/background_downloading_off"
-	/>
 	<EditTextPreference
 		android:key="@string/pref_email_address"
 		android:title="@string/email_address_title"

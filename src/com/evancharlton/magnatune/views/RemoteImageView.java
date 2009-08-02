@@ -51,7 +51,6 @@ public class RemoteImageView extends ImageView {
 			if (local.exists()) {
 				setFromLocal();
 			} else {
-				Log.d(TAG, "Loading remote image");
 				// we already have the local reference, so just make the parent
 				// directories here instead of in the thread.
 				local.getParentFile().mkdirs();

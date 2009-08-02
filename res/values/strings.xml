@@ -33,6 +33,9 @@
     <string name="error_missing_sd_card_message">Your SD card is missing or busy. You will not be able to download anything without your SD card.</string>
     <string name="warning_mobile_network_title">Mobile network</string>
     <string name="warning_mobile_network_message">Due to the size of this download, it is *strongly* recommended that you switch to a wi-fi network before downloading!</string>
+    <string name="cache_cleared">Cache cleared!</string>
+    <string name="cache_clearing">Clearing cache</string>
+    <string name="cache_clearing_message">Deleting cached files ...</string>
     
     <!-- Album browser -->
     <string name="purchase">Purchase</string>
@@ -41,6 +44,7 @@
     <string name="menu_settings">Preferences</string>
     <string name="menu_more_by_artist">More by %1$s</string>
     <string name="menu_more_by_genre">More %1$s music</string>
+    <string name="menu_clear_cache">Clear cache</string>
     
     <!-- preference strings -->
     <string name="pref_background_downloading">background downloading</string>

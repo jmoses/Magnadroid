@@ -33,6 +33,8 @@ import com.evancharlton.magnatune.objects.Song;
 public class DownloadAlbum extends AlbumBrowser implements MediaScannerConnectionClient {
 	private static final String TAG = "Magnatune_DownloadAlbum";
 
+	private static final String NETWORK_DIALOG_SHOWN = "network dialog shown";
+
 	private static final int DIALOG_FORMAT = 1;
 	private static final int DIALOG_NETWORK = 2;
 	private static final int DIALOG_SD_CARD = 3;
@@ -99,11 +101,13 @@ public class DownloadAlbum extends AlbumBrowser implements MediaScannerConnectio
 			mFormatAdapter.notifyDataSetChanged();
 		}
 
-		// see if they're on edge or gprs
-		ConnectivityManager mgr = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		NetworkInfo info = mgr.getActiveNetworkInfo();
-		if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
-			showDialog(DIALOG_NETWORK);
+		if (savedInstanceState == null || savedInstanceState.getBoolean(NETWORK_DIALOG_SHOWN, false) == false) {
+			// see if they're on edge or gprs
+			ConnectivityManager mgr = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+			NetworkInfo info = mgr.getActiveNetworkInfo();
+			if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+				showDialog(DIALOG_NETWORK);
+			}
 		}
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -125,6 +129,12 @@ public class DownloadAlbum extends AlbumBrowser implements MediaScannerConnectio
 		}
 		saved[i] = mDownloadTask;
 		return saved;
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean(NETWORK_DIALOG_SHOWN, true);
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
