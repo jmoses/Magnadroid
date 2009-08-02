@@ -101,8 +101,12 @@ public class AlbumBrowser extends LazyActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_ARTIST, Menu.NONE, format(R.string.menu_more_by_artist, mArtist));
-		menu.add(Menu.NONE, MENU_GENRE, Menu.NONE, format(R.string.menu_more_by_genre, mGenre));
+		if (mArtist != null) {
+			menu.add(Menu.NONE, MENU_ARTIST, Menu.NONE, format(R.string.menu_more_by_artist, mArtist));
+		}
+		if (mGenre != null) {
+			menu.add(Menu.NONE, MENU_GENRE, Menu.NONE, format(R.string.menu_more_by_genre, mGenre));
+		}
 		return super.onCreateOptionsMenu(menu);
 	}
 

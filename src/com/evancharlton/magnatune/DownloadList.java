@@ -15,7 +15,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +28,9 @@ import android.widget.AdapterView;
 import com.evancharlton.magnatune.objects.Download;
 
 public class DownloadList extends LazyActivity {
+	private static final int DIALOG_NO_EMAIL = 10;
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		mFrom = new String[] {
 				Download.ARTIST,
@@ -37,6 +44,27 @@ public class DownloadList extends LazyActivity {
 		};
 		setMultipage(false);
 		super.onCreate(savedInstanceState, R.layout.list, R.layout.album_row);
+		SharedPreferences prefs = getSharedPreferences(getString(R.string.preferences), Context.MODE_PRIVATE);
+		String email = prefs.getString(getString(R.string.pref_email_address), null);
+		if (email == null || email.length() == 0) {
+			showDialog(DIALOG_NO_EMAIL);
+		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int which) {
+		switch (which) {
+			case DIALOG_NO_EMAIL:
+				return new AlertDialog.Builder(this).setPositiveButton(R.string.set_email_address, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_NO_EMAIL);
+						startActivity(new Intent(DownloadList.this, Settings.class));
+						finish();
+					}
+				}).setNegativeButton(R.string.continue_msg, null).setTitle(R.string.warning_no_email_set).setMessage(R.string.warning_no_email_set_message).create();
+		}
+		return super.onCreateDialog(which);
 	}
 
 	@Override
@@ -71,7 +99,7 @@ public class DownloadList extends LazyActivity {
 			DownloadList activity = (DownloadList) super.activity;
 			SharedPreferences prefs = activity.getSharedPreferences(activity.getString(R.string.preferences), Context.MODE_PRIVATE);
 			String email = prefs.getString(activity.getString(R.string.pref_email_address), null);
-			if (email != null) {
+			if (email != null && email.length() > 0) {
 				try {
 					URL url = new URL(MagnatuneAPI.getDownloadUrl(email));
 					DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

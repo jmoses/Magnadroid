@@ -10,40 +10,10 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 	/>
-	<Button
-		android:text="Newest"
-		android:id="@+id/newest"
+	<ListView
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
-	<Button
-		android:text="Genre"
-		android:id="@+id/genre"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
-	<Button
-		android:text="Artist"
-		android:id="@+id/artist"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
-	<Button
-		android:text="Album"
-		android:id="@+id/album"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
-	<Button
-		android:text="Search"
-		android:id="@+id/search"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-	/>
-	<Button
-		android:id="@+id/downloads"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/check_for_downloads"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:id="@android:id/list"
 	/>
 </LinearLayout>

@@ -3,6 +3,13 @@
     <string name="app_name">Magnatune</string>
     <string name="preferences">com.evancharlton.magnatune_preferences</string>
     
+    <!-- main UI strings -->
+    <string name="albums">Albums</string>
+    <string name="artists">Artists</string>
+    <string name="genres">Genres</string>
+    <string name="purchased_albums">Purchased albums</string>
+    <string name="newest_albums">Newest albums</string>
+    
     <!-- generic text strings -->
     <string name="loading">Loading...</string>
     <string name="search">Search</string>
@@ -33,6 +40,8 @@
     <string name="error_missing_sd_card_message">Your SD card is missing or busy. You will not be able to download anything without your SD card.</string>
     <string name="warning_mobile_network_title">Mobile network</string>
     <string name="warning_mobile_network_message">Due to the size of this download, it is *strongly* recommended that you switch to a wi-fi network before downloading!</string>
+    <string name="warning_no_email_set">No e-mail set!</string>
+    <string name="warning_no_email_set_message">You have not specified your e-mail address! Would you like to do that now?</string>    
     <string name="cache_cleared">Cache cleared!</string>
     <string name="cache_clearing">Clearing cache</string>
     <string name="cache_clearing_message">Deleting cached files ...</string>
@@ -56,4 +65,5 @@
     
     <string name="email_address_title">E-mail address</string>
     <string name="email_address_summary">The e-mail address you use to purchase albums from Magnatune</string>
+    <string name="set_email_address">Set e-mail address</string>
 </resources>
