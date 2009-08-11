@@ -90,6 +90,22 @@ public class SearchActivity extends LazyActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		mController = (SongController) findViewById(R.id.controller);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mController != null) {
+			mController.destroy();
+			mController = null;
+			System.gc();
+		}
+	}
+
+	@Override
 	protected LoadTask newLoadTask() {
 		return new SearchTask();
 	}

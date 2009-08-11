@@ -7,7 +7,7 @@
     <string name="albums">Albums</string>
     <string name="artists">Artists</string>
     <string name="genres">Genres</string>
-    <string name="purchased_albums">Purchased albums</string>
+    <string name="purchased_albums">Download albums</string>
     <string name="newest_albums">Newest albums</string>
     
     <!-- generic text strings -->
@@ -15,13 +15,13 @@
     <string name="search">Search</string>
     <string name="currently_playing">Currently playing: </string>
     <string name="buffering">Buffering, please wait...</string>
-    <string name="check_for_downloads">Purchased albums</string>
     <string name="download">Download</string>
     <string name="wifi_settings">Wi-Fi Settings</string>
     <string name="continue_msg">Continue</string>
     <string name="downloading_message">Downloading album ...</string>
     <string name="unzipping_message">Extracting tracks ...</string>
     <string name="downloading_cover_art">Downloading cover art ...</string>
+    <string name="no_purchased_albums">I don\'t see that you've purchased any albums. Why not go find one you like?</string>
     
     <!-- titles -->
     <string name="title_albumlist">Magnatune - Albums</string>
@@ -29,8 +29,8 @@
     <string name="title_genrelist">Magnatune - Genres</string>
     <string name="title_artistlist">Magnatune - Artists</string>
     <string name="title_search">Magnatune - Search</string>
-    <string name="title_settings">Magnatune - Preferences</string>
-    <string name="title_downloads_list">Magnatune - Purchased albums</string>
+    <string name="title_settings">Magnatune - Settings</string>
+    <string name="title_downloads_list">Magnatune - Download albums</string>
     <string name="title_download_album">Magnatune - Download purchased album</string>
     
     <!-- dialog strings -->
@@ -50,18 +50,13 @@
     <string name="purchase">Purchase</string>
     
     <!-- menu strings -->
-    <string name="menu_settings">Preferences</string>
+    <string name="menu_settings">Settings</string>
     <string name="menu_more_by_artist">More by %1$s</string>
     <string name="menu_more_by_genre">More %1$s music</string>
     <string name="menu_clear_cache">Clear cache</string>
     
     <!-- preference strings -->
-    <string name="pref_background_downloading">background downloading</string>
     <string name="pref_email_address">email address</string>
-    
-    <string name="background_downloading">Background data</string>
-    <string name="background_downloading_on">Purchased albums will automatically be downloaded in the background</string>
-    <string name="background_downloading_off">Purchased albums will only be downloaded when you request it</string>
     
     <string name="email_address_title">E-mail address</string>
     <string name="email_address_summary">The e-mail address you use to purchase albums from Magnatune</string>

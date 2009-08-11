@@ -46,12 +46,12 @@ public class Magnatune extends Activity {
 			}
 		});
 
-		add(R.drawable.icon, R.string.newest_albums, new Intent(this, LatestAlbums.class));
-		add(R.drawable.icon, R.string.albums, new Intent(this, AlbumList.class));
+		add(R.drawable.newest, R.string.newest_albums, new Intent(this, LatestAlbums.class));
+		add(R.drawable.albums, R.string.albums, new Intent(this, AlbumList.class));
 		add(R.drawable.icon, R.string.genres, new Intent(this, GenreList.class));
-		add(R.drawable.icon, R.string.artists, new Intent(this, ArtistList.class));
-		add(R.drawable.icon, R.string.search, new Intent(this, SearchActivity.class));
-		add(R.drawable.icon, R.string.purchased_albums, new Intent(this, DownloadList.class));
+		add(R.drawable.artists, R.string.artists, new Intent(this, ArtistList.class));
+		add(R.drawable.search, R.string.search, new Intent(this, SearchActivity.class));
+		add(R.drawable.download, R.string.purchased_albums, new Intent(this, DownloadList.class));
 	}
 
 	private void add(int icon, int text, Intent intent) {

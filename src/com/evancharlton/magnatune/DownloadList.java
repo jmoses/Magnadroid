@@ -145,6 +145,8 @@ public class DownloadList extends LazyActivity {
 					e.printStackTrace();
 				} catch (SAXException e) {
 					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
 				}
 				return false;
 			}

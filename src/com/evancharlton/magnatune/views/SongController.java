@@ -125,6 +125,7 @@ public class SongController extends RelativeLayout {
 		}
 		mMediaPlayer.release();
 		mSeekThread.cancel();
+		setVisibility(View.GONE);
 	}
 
 	public void release() {
