@@ -3,12 +3,11 @@ package com.evancharlton.magnatune;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -102,10 +101,10 @@ public class AlbumBrowser extends LazyActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (mArtist != null) {
-			menu.add(Menu.NONE, MENU_ARTIST, Menu.NONE, format(R.string.menu_more_by_artist, mArtist));
+			menu.add(Menu.NONE, MENU_ARTIST, Menu.FIRST + 1, format(R.string.menu_more_by_artist, mArtist));
 		}
 		if (mGenre != null) {
-			menu.add(Menu.NONE, MENU_GENRE, Menu.NONE, format(R.string.menu_more_by_genre, mGenre));
+			menu.add(Menu.NONE, MENU_GENRE, Menu.FIRST + 2, format(R.string.menu_more_by_genre, mGenre));
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -169,12 +168,8 @@ public class AlbumBrowser extends LazyActivity {
 						publishProgress(songInfo);
 					}
 					return true;
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					activity.setException(e);
 				}
 			}
 			return false;
@@ -202,6 +197,8 @@ public class AlbumBrowser extends LazyActivity {
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			showDialog(DIALOG_ERROR_LOADING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

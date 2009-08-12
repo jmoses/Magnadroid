@@ -100,7 +100,7 @@ public class AlbumList extends LazyActivity {
 				}
 				return true;
 			} catch (Exception e) {
-				e.printStackTrace();
+				activity.setException(e);
 			}
 			return false;
 		}

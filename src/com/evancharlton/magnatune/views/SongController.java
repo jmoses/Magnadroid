@@ -2,12 +2,14 @@ package com.evancharlton.magnatune.views;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,7 +92,7 @@ public class SongController extends RelativeLayout {
 		super.finalize();
 	}
 
-	public void autoPlay(String url) throws IllegalArgumentException, IllegalStateException, IOException {
+	public void autoPlay(String url) throws IllegalArgumentException, IllegalStateException, UnknownHostException, IOException {
 		setVisibility(View.VISIBLE);
 
 		mSeekThread.cancel();
@@ -110,11 +112,10 @@ public class SongController extends RelativeLayout {
 		mSeekBar.setMax(100);
 		mSeekBar.setProgress(0);
 		mSeekBar.setSecondaryProgress(0);
-
-		setVisibility(View.VISIBLE);
 	}
 
 	public void destroy() {
+		Log.d(TAG, "Destroying SongController");
 		freeWakeLock();
 		try {
 			if (mMediaPlayer.isPlaying()) {
@@ -146,6 +147,7 @@ public class SongController extends RelativeLayout {
 
 	private void freeWakeLock() {
 		if (mWakeLock.isHeld()) {
+			Log.d(TAG, "Freeing wakelock");
 			mWakeLock.release();
 		}
 	}
@@ -181,7 +183,7 @@ public class SongController extends RelativeLayout {
 			play();
 			mSeekBar.setMax(mp.getDuration());
 			freeWakeLock();
-			mWakeLock.acquire(mp.getDuration());
+			mWakeLock.acquire();
 			mSeekThread.start();
 		}
 

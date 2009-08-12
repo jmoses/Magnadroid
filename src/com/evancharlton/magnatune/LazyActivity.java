@@ -4,12 +4,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -17,12 +17,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public abstract class LazyActivity extends Activity implements OnItemClickListener {
+public abstract class LazyActivity extends MagnatuneActivity implements OnItemClickListener {
+	private static final String TAG = "LazyActivity";
+
 	protected static final int DIALOG_ERROR_LOADING = 10;
 
 	protected static final int MENU_ARTIST = Menu.FIRST;
@@ -37,6 +40,7 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 
 	protected LoadTask mLoadTask;
 	protected LoadQueue mScheduler = new LoadQueue();
+	protected Exception mException = null;
 
 	protected int mPage = 1;
 
@@ -140,6 +144,20 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 		startActivity(i);
 	}
 
+	protected void setException(Exception e) {
+		mException = e;
+	}
+
+	protected void handleException() {
+		if (mException != null) {
+			Log.e(TAG, "Exception!", mException);
+			if (mException instanceof UnknownHostException) {
+				showDialog(DIALOG_ERROR_LOADING);
+			}
+		}
+		mException = null;
+	}
+
 	protected class LoadQueue {
 		public static final int PRIORITY_LOW = 0;
 		public static final int PRIORITY_HIGH = 1;
@@ -186,6 +204,11 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 		}
 
 		@Override
+		protected void onPreExecute() {
+			activity.mException = null;
+		}
+
+		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
 				if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -207,14 +230,15 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 					}
 				}
 				return true;
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				activity.setException(e);
 			}
 			return false;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean success) {
+			activity.handleException();
 			activity.mScheduler.finished();
 		}
 	}
@@ -225,6 +249,7 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 
 		@Override
 		protected void onPreExecute() {
+			activity.mException = null;
 			mCancelled = false;
 			activity.setProgressBarIndeterminateVisibility(true);
 			activity.mAdapter.setStopLoading(true);
@@ -245,6 +270,7 @@ public abstract class LazyActivity extends Activity implements OnItemClickListen
 
 		@Override
 		protected void onPostExecute(Boolean result) {
+			activity.handleException();
 			activity.setProgressBarIndeterminateVisibility(false);
 			System.gc();
 		}

@@ -50,8 +50,8 @@ public class HTTPThread extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				fos.flush();
 				is.close();
+				fos.flush();
 				fos.close();
 			}
 		} catch (MalformedURLException e) {
@@ -63,7 +63,7 @@ public class HTTPThread extends Thread {
 		synchronized (this) {
 			mStatus = STATUS_FINISHED;
 		}
-		mHandler.sendEmptyMessage(mStatus);
+		mHandler.sendEmptyMessage(STATUS_FINISHED);
 	}
 
 	public int getStatus() {

@@ -1,12 +1,10 @@
 package com.evancharlton.magnatune;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -64,12 +62,8 @@ public class ArtistList extends LazyActivity {
 					publishProgress(artistInfo);
 				}
 				return true;
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (NullPointerException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				activity.setException(e);
 			}
 			return false;
 		}

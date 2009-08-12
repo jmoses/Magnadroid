@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.evancharlton.magnatune.HTTPQueue;
@@ -16,8 +15,6 @@ import com.evancharlton.magnatune.HTTPThread;
 import com.evancharlton.magnatune.R;
 
 public class RemoteImageView extends ImageView {
-	private static final String TAG = "RemoteImageView";
-
 	private String mLocal;
 	private String mRemote;
 
@@ -54,22 +51,21 @@ public class RemoteImageView extends ImageView {
 				// we already have the local reference, so just make the parent
 				// directories here instead of in the thread.
 				local.getParentFile().mkdirs();
-				HTTPQueue queue = HTTPQueue.getInstance();
-				queue.enqueue(new HTTPThread(mRemote, mLocal, mHandler), HTTPQueue.PRIORITY_HIGH);
-				setImageResource(R.drawable.icon);
+				queue();
 			}
 		}
+	}
+
+	private void queue() {
+		HTTPQueue queue = HTTPQueue.getInstance();
+		queue.enqueue(new HTTPThread(mRemote, mLocal, mHandler), HTTPQueue.PRIORITY_HIGH);
+		setImageResource(R.drawable.icon);
 	}
 
 	private void setFromLocal() {
 		Drawable d = Drawable.createFromPath(mLocal);
 		if (d != null) {
 			setImageDrawable(d);
-		} else {
-			// FIXME: Sometimes it can't load a file which it just downloaded
-			// but if it scrolls off and comes back, it will load just fine (so
-			// there isn't anything wrong with the drawable).
-			Log.d(TAG, "Drawable is null! Using placeholder.");
 		}
 	}
 

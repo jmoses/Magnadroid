@@ -5,11 +5,8 @@ import java.util.HashMap;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 public class HTTPQueue {
-	private static final String TAG = "HTTPQueue";
-
 	public static final int PRIORITY_LOW = 0;
 	public static final int PRIORITY_HIGH = 1;
 
@@ -61,7 +58,6 @@ public class HTTPQueue {
 				task.setHandler(mHandler);
 				task.start();
 			} else if (task.getStatus() == HTTPThread.STATUS_FINISHED) {
-				Log.d(TAG, "HTTPQueue size: " + mQueue.size());
 				HTTPThread thread = mQueue.remove(0);
 				mThreads.remove(thread.getId());
 				runFirst();

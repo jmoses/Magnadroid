@@ -3,19 +3,14 @@ package com.evancharlton.magnatune;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class Magnatune extends Activity {
-	private static final int MENU_SETTINGS = Menu.FIRST;
-
+public class Magnatune extends MagnatuneActivity {
 	private static final String ROW_TEXT = "text";
 	private static final String ROW_ICON = "icon";
 
@@ -48,7 +43,7 @@ public class Magnatune extends Activity {
 
 		add(R.drawable.newest, R.string.newest_albums, new Intent(this, LatestAlbums.class));
 		add(R.drawable.albums, R.string.albums, new Intent(this, AlbumList.class));
-		add(R.drawable.icon, R.string.genres, new Intent(this, GenreList.class));
+		add(R.drawable.genres, R.string.genres, new Intent(this, GenreList.class));
 		add(R.drawable.artists, R.string.artists, new Intent(this, ArtistList.class));
 		add(R.drawable.search, R.string.search, new Intent(this, SearchActivity.class));
 		add(R.drawable.download, R.string.purchased_albums, new Intent(this, DownloadList.class));
@@ -61,21 +56,5 @@ public class Magnatune extends Activity {
 		row.put(ROW_ICON, String.valueOf(icon));
 		mAdapterData.add(row);
 		mAdapter.notifyDataSetChanged();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.menu_settings).setIcon(R.drawable.ic_menu_preferences);
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case MENU_SETTINGS:
-				startActivity(new Intent(this, Settings.class));
-				return true;
-		}
-		return super.onOptionsItemSelected(item);
 	}
 }

@@ -3,10 +3,10 @@ package com.evancharlton.magnatune;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
@@ -123,6 +123,8 @@ public class SearchActivity extends LazyActivity {
 				mController.autoPlay(MagnatuneAPI.getMP3Url(info.get(Song.MP3)));
 			} catch (IllegalArgumentException e) {
 				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				showDialog(DIALOG_ERROR_LOADING);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -198,10 +200,8 @@ public class SearchActivity extends LazyActivity {
 						publishProgress(resultInfo);
 					}
 					return true;
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					activity.setException(e);
 				}
 				return false;
 			}
