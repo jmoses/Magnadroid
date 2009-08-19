@@ -1,10 +1,8 @@
 package com.evancharlton.magnatune;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -40,37 +38,28 @@ public class ArtistList extends LazyActivity {
 	}
 
 	private static class LoadArtistsTask extends LoadTask {
-		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
-			try {
-				URL request = new URL(MagnatuneAPI.getFilterUrl(activity.mPage, "artists", null));
-				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
-				JSONArray artists = new JSONArray(jsonRaw);
-				JSONObject artistObject;
-				for (int i = 0; i < artists.length(); i++) {
-					artistObject = artists.getJSONObject(i);
-					HashMap<String, String> artistInfo = new HashMap<String, String>();
-					artistInfo.put(Artist.ID, artistObject.getString("pk"));
-
-					artistObject = artistObject.getJSONObject("fields");
-					artistInfo.put(Artist.BIO, artistObject.getString("bio"));
-					artistInfo.put(Artist.CITY, artistObject.getString("city"));
-					artistInfo.put(Artist.STATE, artistObject.getString("state"));
-					artistInfo.put(Artist.COUNTRY, artistObject.getString("country"));
-					artistInfo.put(Artist.NAME, artistObject.getString("title"));
-					publishProgress(artistInfo);
-				}
-				return true;
-			} catch (Exception e) {
-				activity.setException(e);
-			}
-			return false;
+			return loadUrl(MagnatuneAPI.getFilterUrl("artists", null));
 		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> list, View row, int position, long id) {
 		startActivityForPosition(ArtistBrowser.class, position);
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject artistObject) throws JSONException {
+		HashMap<String, String> artistInfo = new HashMap<String, String>();
+		artistInfo.put(Artist.ID, artistObject.getString("pk"));
+
+		artistObject = artistObject.getJSONObject("fields");
+		artistInfo.put(Artist.BIO, artistObject.getString("bio"));
+		artistInfo.put(Artist.CITY, artistObject.getString("city"));
+		artistInfo.put(Artist.STATE, artistObject.getString("state"));
+		artistInfo.put(Artist.COUNTRY, artistObject.getString("country"));
+		artistInfo.put(Artist.NAME, artistObject.getString("title"));
+		return artistInfo;
 	}
 }

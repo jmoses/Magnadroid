@@ -1,19 +1,16 @@
 package com.evancharlton.magnatune;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -28,8 +25,6 @@ import com.evancharlton.magnatune.objects.Song;
 import com.evancharlton.magnatune.views.SongController;
 
 public class SearchActivity extends LazyActivity {
-	private static final String TAG = "Magnatune_SearchActivity";
-
 	private static final int MIN_LENGTH = 3;
 
 	private EditText mQuery;
@@ -148,64 +143,51 @@ public class SearchActivity extends LazyActivity {
 	}
 
 	private static class SearchTask extends LoadTask {
-		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
 			if (params.length == 1 && params[0].length() > MIN_LENGTH) {
-				String url = MagnatuneAPI.getFilterUrl(1, "search", params[0]);
-				Log.d(TAG, "Searching: " + url);
-				try {
-					URL request = new URL(url);
-					String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
-					JSONArray results = new JSONArray(jsonRaw);
-					JSONObject resultObject;
-					for (int i = 0; i < results.length(); i++) {
-						if (mCancelled == true) {
-							return true;
-						}
-						HashMap<String, String> resultInfo = new HashMap<String, String>();
-						resultObject = results.getJSONObject(i);
-						String id = resultObject.getString("pk");
-						resultInfo.put(SearchResult.ID, id);
-						String model = resultObject.getString("model");
-						resultInfo.put(SearchResult.MODEL, model);
-
-						resultObject = resultObject.getJSONObject("fields");
-						String title = resultObject.getString("title");
-						String artist;
-						String album;
-						resultInfo.put(SearchResult.TITLE, title);
-						if (SearchResult.MODEL_ALBUM.equals(model)) {
-							resultInfo.put(Album.TITLE, title);
-							artist = resultObject.getString("artist_text");
-							resultInfo.put(Album.ARTIST, artist);
-							resultInfo.put(Album.ID, id);
-							resultInfo.put(SearchResult.ICON_URL, MagnatuneAPI.getCoverArtUrl(artist, title, 50));
-							resultInfo.put(SearchResult.SUBTEXT, String.format("%s (%s)", resultObject.getString("artist_text"), resultObject.getString("genre_text")));
-						} else if (SearchResult.MODEL_ARTIST.equals(model)) {
-							resultInfo.put(Artist.NAME, resultObject.getString("title"));
-							resultInfo.put(Artist.BIO, resultObject.getString("bio"));
-							resultInfo.put(Artist.ID, id);
-							resultInfo.put(SearchResult.SUBTEXT, resultObject.getString("bio"));
-						} else if (SearchResult.MODEL_SONG.equals(model)) {
-							artist = resultObject.getString("artist_text");
-							album = resultObject.getString("album_text");
-							resultInfo.put(SearchResult.SUBTEXT, artist + " - " + album);
-							resultInfo.put(Song.ARTIST, artist);
-							resultInfo.put(Song.ARTIST_ID, resultObject.getString("artist"));
-							resultInfo.put(Song.ALBUM, album);
-							resultInfo.put(Song.ALBUM_ID, resultObject.getString("album"));
-							resultInfo.put(Song.MP3, resultObject.getString("mp3"));
-						}
-						publishProgress(resultInfo);
-					}
-					return true;
-				} catch (Exception e) {
-					activity.setException(e);
-				}
-				return false;
+				mUrl = MagnatuneAPI.getFilterUrl("search", params[0]);
+				return loadUrl(mUrl);
 			}
 			return true;
 		}
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject resultObject) throws JSONException {
+		HashMap<String, String> resultInfo = new HashMap<String, String>();
+		String id = resultObject.getString("pk");
+		resultInfo.put(SearchResult.ID, id);
+		String model = resultObject.getString("model");
+		resultInfo.put(SearchResult.MODEL, model);
+
+		resultObject = resultObject.getJSONObject("fields");
+		String title = resultObject.getString("title");
+		String artist;
+		String album;
+		resultInfo.put(SearchResult.TITLE, title);
+		if (SearchResult.MODEL_ALBUM.equals(model)) {
+			resultInfo.put(Album.TITLE, title);
+			artist = resultObject.getString("artist_text");
+			resultInfo.put(Album.ARTIST, artist);
+			resultInfo.put(Album.ID, id);
+			resultInfo.put(SearchResult.ICON_URL, MagnatuneAPI.getCoverArtUrl(artist, title, 50));
+			resultInfo.put(SearchResult.SUBTEXT, String.format("%s (%s)", resultObject.getString("artist_text"), resultObject.getString("genre_text")));
+		} else if (SearchResult.MODEL_ARTIST.equals(model)) {
+			resultInfo.put(Artist.NAME, resultObject.getString("title"));
+			resultInfo.put(Artist.BIO, resultObject.getString("bio"));
+			resultInfo.put(Artist.ID, id);
+			resultInfo.put(SearchResult.SUBTEXT, resultObject.getString("bio"));
+		} else if (SearchResult.MODEL_SONG.equals(model)) {
+			artist = resultObject.getString("artist_text");
+			album = resultObject.getString("album_text");
+			resultInfo.put(SearchResult.SUBTEXT, artist + " - " + album);
+			resultInfo.put(Song.ARTIST, artist);
+			resultInfo.put(Song.ARTIST_ID, resultObject.getString("artist"));
+			resultInfo.put(Song.ALBUM, album);
+			resultInfo.put(Song.ALBUM_ID, resultObject.getString("album"));
+			resultInfo.put(Song.MP3, resultObject.getString("mp3"));
+		}
+		return resultInfo;
 	}
 }

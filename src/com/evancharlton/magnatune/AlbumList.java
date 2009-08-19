@@ -1,10 +1,8 @@
 package com.evancharlton.magnatune;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -68,41 +66,15 @@ public class AlbumList extends LazyActivity {
 	}
 
 	protected String getUrl() {
-		return MagnatuneAPI.getFilterUrl(mPage, mGroup, mFilter);
+		return MagnatuneAPI.getFilterUrl(mGroup, mFilter);
 	}
 
 	protected static class LoadAlbumsTask extends LoadTask {
-		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
 			AlbumList activity = (AlbumList) super.activity;
-			String url = activity.getUrl();
-			try {
-				URL request = new URL(url);
-				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
-				JSONArray albums = new JSONArray(jsonRaw);
-				JSONObject albumObject;
-				for (int i = 0; i < albums.length(); i++) {
-					HashMap<String, String> albumInfo = new HashMap<String, String>();
-					albumObject = albums.getJSONObject(i);
-					albumInfo.put(Album.ID, albumObject.getString("pk"));
-
-					albumObject = albumObject.getJSONObject("fields");
-					String album = albumObject.getString("title");
-					albumInfo.put(Album.TITLE, album);
-					albumInfo.put(Artist.ID, albumObject.getString("artist"));
-					String artist = albumObject.getString("artist_text");
-					albumInfo.put(Album.ARTIST, artist);
-					albumInfo.put(Album.SKU, albumObject.getString("sku"));
-					albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
-					albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
-					publishProgress(albumInfo);
-				}
-				return true;
-			} catch (Exception e) {
-				activity.setException(e);
-			}
-			return false;
+			mUrl = activity.getUrl();
+			return loadUrl(mUrl);
 		}
 
 		@Override
@@ -112,5 +84,22 @@ public class AlbumList extends LazyActivity {
 				activity.showDialog(DIALOG_ERROR_LOADING);
 			}
 		}
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject albumObject) throws JSONException {
+		HashMap<String, String> albumInfo = new HashMap<String, String>();
+		albumInfo.put(Album.ID, albumObject.getString("pk"));
+
+		albumObject = albumObject.getJSONObject("fields");
+		String album = albumObject.getString("title");
+		albumInfo.put(Album.TITLE, album);
+		albumInfo.put(Artist.ID, albumObject.getString("artist"));
+		String artist = albumObject.getString("artist_text");
+		albumInfo.put(Album.ARTIST, artist);
+		albumInfo.put(Album.SKU, albumObject.getString("sku"));
+		albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
+		albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
+		return albumInfo;
 	}
 }

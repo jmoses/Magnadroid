@@ -17,6 +17,7 @@ import com.evancharlton.magnatune.R;
 public class RemoteImageView extends ImageView {
 	private String mLocal;
 	private String mRemote;
+	private HTTPThread mThread = null;
 
 	public RemoteImageView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
@@ -56,13 +57,25 @@ public class RemoteImageView extends ImageView {
 		}
 	}
 
+	@Override
+	public void finalize() {
+		if (mThread != null) {
+			HTTPQueue queue = HTTPQueue.getInstance();
+			queue.dequeue(mThread);
+		}
+	}
+
 	private void queue() {
-		HTTPQueue queue = HTTPQueue.getInstance();
-		queue.enqueue(new HTTPThread(mRemote, mLocal, mHandler), HTTPQueue.PRIORITY_HIGH);
+		if (mThread == null) {
+			mThread = new HTTPThread(mRemote, mLocal, mHandler);
+			HTTPQueue queue = HTTPQueue.getInstance();
+			queue.enqueue(mThread, HTTPQueue.PRIORITY_HIGH);
+		}
 		setImageResource(R.drawable.icon);
 	}
 
 	private void setFromLocal() {
+		mThread = null;
 		Drawable d = Drawable.createFromPath(mLocal);
 		if (d != null) {
 			setImageDrawable(d);

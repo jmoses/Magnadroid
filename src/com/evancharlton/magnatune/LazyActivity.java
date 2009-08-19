@@ -10,10 +10,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +48,7 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 	protected Exception mException = null;
 
 	protected int mPage = 1;
+	protected String mFilter = "";
 
 	protected void onCreate(Bundle savedInstanceState, int layoutResId) {
 		onCreate(savedInstanceState, layoutResId, android.R.layout.simple_list_item_1);
@@ -58,6 +64,7 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 		mList.setAdapter(mAdapter);
 		mList.setOnItemClickListener(this);
 		mList.setFastScrollEnabled(true);
+		mList.setTextFilterEnabled(true);
 
 		restoreState();
 
@@ -158,6 +165,8 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 		mException = null;
 	}
 
+	abstract protected HashMap<String, String> loadJSON(JSONObject json) throws JSONException;
+
 	protected class LoadQueue {
 		public static final int PRIORITY_LOW = 0;
 		public static final int PRIORITY_HIGH = 1;
@@ -246,6 +255,7 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 	protected abstract static class LoadTask extends AsyncTask<String, HashMap<String, String>, Boolean> {
 		public LazyActivity activity;
 		protected boolean mCancelled;
+		protected String mUrl = null;
 
 		@Override
 		protected void onPreExecute() {
@@ -264,15 +274,45 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 		}
 
 		@Override
-		protected void onCancelled() {
-			mCancelled = true;
-		}
-
-		@Override
 		protected void onPostExecute(Boolean result) {
 			activity.handleException();
 			activity.setProgressBarIndeterminateVisibility(false);
 			System.gc();
+		}
+
+		public Uri getLoadedURL() {
+			if (mUrl != null) {
+				return Uri.parse(mUrl);
+			}
+			return null;
+		}
+
+		@SuppressWarnings("unchecked")
+		final protected boolean loadUrl(String url) {
+			mUrl = url;
+			Uri u = Uri.parse(mUrl);
+			Uri.Builder builder = u.buildUpon();
+			builder.appendQueryParameter("filter", activity.mFilter);
+			builder.appendQueryParameter("page", String.valueOf(activity.mPage));
+			mUrl = builder.build().toString();
+			try {
+				URL request = new URL(mUrl);
+				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
+				JSONArray collection = new JSONArray(jsonRaw);
+				for (int i = 0; i < collection.length(); i++) {
+					if (isCancelled()) {
+						return false;
+					}
+					try {
+						publishProgress(activity.loadJSON(collection.getJSONObject(i)));
+					} catch (JSONException e) {
+					}
+				}
+				return true;
+			} catch (Exception e) {
+				activity.setException(e);
+			}
+			return false;
 		}
 	}
 }

@@ -21,7 +21,6 @@
     <string name="downloading_message">Downloading album ...</string>
     <string name="unzipping_message">Extracting tracks ...</string>
     <string name="downloading_cover_art">Downloading cover art ...</string>
-    <string name="no_purchased_albums">I don\'t see that you've purchased any albums. Why not go find one you like?</string>
     
     <!-- titles -->
     <string name="title_albumlist">Magnatune - Albums</string>

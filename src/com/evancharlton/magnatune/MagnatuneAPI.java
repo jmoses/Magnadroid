@@ -29,7 +29,7 @@ public class MagnatuneAPI {
 		}
 	}
 
-	public static String getFilterUrl(int page, String group, String filter) {
+	public static String getFilterUrl(String group, String filter) {
 		String url;
 		if (filter == null) {
 			url = String.format(API_BASE + "/%s/", URLEncoder.encode(group));
@@ -37,7 +37,7 @@ public class MagnatuneAPI {
 			url = String.format(API_BASE + "/%s/%s/", URLEncoder.encode(group), URLEncoder.encode(filter));
 		}
 		url = url.replaceAll("\\+", "%20");
-		return url + "?page=" + String.valueOf(page);
+		return url;
 	}
 
 	public static String getCoverArtUrl(String artist, String album) {

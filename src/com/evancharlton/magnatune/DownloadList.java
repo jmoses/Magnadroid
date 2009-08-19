@@ -7,6 +7,8 @@ import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -140,5 +142,10 @@ public class DownloadList extends LazyActivity {
 			}
 			return false;
 		}
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject json) throws JSONException {
+		return null;
 	}
 }

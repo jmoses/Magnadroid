@@ -1,10 +1,8 @@
 package com.evancharlton.magnatune;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.HashMap;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -98,44 +96,9 @@ public class ArtistBrowser extends LazyActivity {
 	}
 
 	protected static class LoadAlbumsTask extends LoadTask {
-		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
-			try {
-				URL request = new URL(MagnatuneAPI.getFilterUrl(activity.mPage, "artists", ((ArtistBrowser) activity).mArtistId));
-				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
-				JSONArray albums = new JSONArray(jsonRaw);
-				JSONObject albumObject;
-				for (int i = 0; i < albums.length(); i++) {
-					HashMap<String, String> albumInfo = new HashMap<String, String>();
-					albumObject = albums.getJSONObject(i);
-					String type = albumObject.getString("model");
-					albumInfo.put(Model.TYPE, type);
-					if (Artist.MODEL.equals(type)) {
-						albumObject = albumObject.getJSONObject("fields");
-						albumInfo.put(Artist.NAME, albumObject.getString("title"));
-						albumInfo.put(Artist.BIO, albumObject.getString("bio"));
-						albumInfo.put(Artist.CITY, albumObject.getString("city"));
-						albumInfo.put(Artist.COUNTRY, albumObject.getString("country"));
-						albumInfo.put(Artist.STATE, albumObject.getString("state"));
-					} else {
-						albumInfo.put(Album.ID, albumObject.getString("pk"));
-						albumObject = albumObject.getJSONObject("fields");
-						String album = albumObject.getString("title");
-						albumInfo.put(Album.TITLE, album);
-						String artist = albumObject.getString("artist_text");
-						albumInfo.put(Album.ARTIST, artist);
-						albumInfo.put(Album.SKU, albumObject.getString("sku"));
-						albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
-						albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
-					}
-					publishProgress(albumInfo);
-				}
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return false;
+			return loadUrl(MagnatuneAPI.getFilterUrl("artists", ((ArtistBrowser) activity).mArtistId));
 		}
 
 		@Override
@@ -153,5 +116,31 @@ public class ArtistBrowser extends LazyActivity {
 				activity.setDetails();
 			}
 		}
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject albumObject) throws JSONException {
+		HashMap<String, String> albumInfo = new HashMap<String, String>();
+		String type = albumObject.getString("model");
+		albumInfo.put(Model.TYPE, type);
+		if (Artist.MODEL.equals(type)) {
+			albumObject = albumObject.getJSONObject("fields");
+			albumInfo.put(Artist.NAME, albumObject.getString("title"));
+			albumInfo.put(Artist.BIO, albumObject.getString("bio"));
+			albumInfo.put(Artist.CITY, albumObject.getString("city"));
+			albumInfo.put(Artist.COUNTRY, albumObject.getString("country"));
+			albumInfo.put(Artist.STATE, albumObject.getString("state"));
+		} else {
+			albumInfo.put(Album.ID, albumObject.getString("pk"));
+			albumObject = albumObject.getJSONObject("fields");
+			String album = albumObject.getString("title");
+			albumInfo.put(Album.TITLE, album);
+			String artist = albumObject.getString("artist_text");
+			albumInfo.put(Album.ARTIST, artist);
+			albumInfo.put(Album.SKU, albumObject.getString("sku"));
+			albumInfo.put(Album.GENRE, albumObject.getString("genre_text"));
+			albumInfo.put(Album.ARTWORK, MagnatuneAPI.getCoverArtUrl(artist, album, 50));
+		}
+		return albumInfo;
 	}
 }

@@ -98,7 +98,7 @@ public class GenreList extends ListActivity {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-				URL request = new URL(MagnatuneAPI.getFilterUrl(1, "genres", null));
+				URL request = new URL(MagnatuneAPI.getFilterUrl("genres", null));
 				String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
 				JSONArray genres = new JSONArray(jsonRaw);
 				JSONObject genreObject;

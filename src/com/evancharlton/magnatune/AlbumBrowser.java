@@ -1,13 +1,11 @@
 package com.evancharlton.magnatune;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -145,40 +143,13 @@ public class AlbumBrowser extends LazyActivity {
 	}
 
 	private static class LoadAlbumTask extends LoadTask {
-		@SuppressWarnings("unchecked")
 		@Override
 		protected Boolean doInBackground(String... params) {
 			AlbumBrowser activity = (AlbumBrowser) super.activity;
 			if (activity.mAlbumId != null) {
-				String url = MagnatuneAPI.getFilterUrl(1, "albums", activity.mAlbumId);
-				try {
-					URL request = new URL(url);
-					String jsonRaw = MagnatuneAPI.getContent((InputStream) request.getContent());
-					JSONArray songs = new JSONArray(jsonRaw);
-					JSONObject songObject;
-					for (int i = 0; i < songs.length(); i++) {
-						songObject = songs.getJSONObject(i).getJSONObject("fields");
-						HashMap<String, String> songInfo = new HashMap<String, String>();
-						songInfo.put(Song.TITLE, songObject.getString("title"));
-						// calculate the duration
-						Long duration = songObject.getLong("duration");
-						songInfo.put(Song.DURATION, String.valueOf(duration));
-						songInfo.put(Song.DURATION_TEXT, activity.getDuration(duration));
-						songInfo.put(Song.MP3, songObject.getString("mp3"));
-						publishProgress(songInfo);
-					}
-					return true;
-				} catch (Exception e) {
-					activity.setException(e);
-				}
+				return loadUrl(MagnatuneAPI.getFilterUrl("albums", activity.mAlbumId));
 			}
 			return false;
-		}
-
-		@Override
-		protected void onProgressUpdate(HashMap<String, String>... updates) {
-			activity.mAdapterData.add(updates[0]);
-			activity.mAdapter.notifyDataSetChanged();
 		}
 	}
 
@@ -202,5 +173,18 @@ public class AlbumBrowser extends LazyActivity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected HashMap<String, String> loadJSON(JSONObject json) throws JSONException {
+		json = json.getJSONObject("fields");
+		HashMap<String, String> songInfo = new HashMap<String, String>();
+		songInfo.put(Song.TITLE, json.getString("title"));
+		// calculate the duration
+		Long duration = json.getLong("duration");
+		songInfo.put(Song.DURATION, String.valueOf(duration));
+		songInfo.put(Song.DURATION_TEXT, getDuration(duration));
+		songInfo.put(Song.MP3, json.getString("mp3"));
+		return songInfo;
 	}
 }

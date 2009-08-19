@@ -30,7 +30,7 @@ public class HTTPQueue {
 		enqueue(task, PRIORITY_LOW);
 	}
 
-	public void enqueue(HTTPThread task, int priority) {
+	public synchronized void enqueue(HTTPThread task, int priority) {
 		Boolean exists = mThreads.get(task.getId());
 		if (exists == null) {
 			if (mQueue.size() == 0 || priority == PRIORITY_LOW) {
@@ -41,6 +41,11 @@ public class HTTPQueue {
 			mThreads.put(task.getId(), true);
 		}
 		runFirst();
+	}
+
+	public synchronized void dequeue(final HTTPThread task) {
+		mThreads.remove(task.getId());
+		mQueue.remove(task);
 	}
 
 	public synchronized void finished(int result) {
