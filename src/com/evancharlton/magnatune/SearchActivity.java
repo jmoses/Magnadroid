@@ -82,6 +82,7 @@ public class SearchActivity extends LazyActivity {
 		});
 
 		mInputMethodMgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		mList.setTextFilterEnabled(false);
 	}
 
 	@Override

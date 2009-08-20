@@ -47,6 +47,7 @@ public class DownloadList extends LazyActivity {
 		if (email == null || email.length() == 0) {
 			showDialog(DIALOG_NO_EMAIL);
 		}
+		mList.setTextFilterEnabled(false);
 	}
 
 	@Override

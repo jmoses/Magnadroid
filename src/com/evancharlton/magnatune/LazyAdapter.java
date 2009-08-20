@@ -102,7 +102,10 @@ public class LazyAdapter extends SimpleAdapter implements Filterable {
 				JSONArray collection = new JSONArray(jsonRaw);
 				for (int i = 0; i < collection.length(); i++) {
 					try {
-						results.add(mActivity.loadJSON(collection.getJSONObject(i)));
+						HashMap<String, String> parsed = mActivity.loadJSON(collection.getJSONObject(i));
+						if (parsed != null) {
+							results.add(parsed);
+						}
 					} catch (JSONException e) {
 					}
 				}
@@ -118,9 +121,13 @@ public class LazyAdapter extends SimpleAdapter implements Filterable {
 		@SuppressWarnings("unchecked")
 		@Override
 		protected void publishResults(CharSequence constraint, FilterResults results) {
-			mActivity.mAdapterData.clear();
-			mActivity.mAdapterData.addAll((ArrayList<HashMap<String, String>>) results.values);
-			mActivity.mAdapter.notifyDataSetChanged();
+			if (results.count > 0) {
+				mActivity.mAdapterData.clear();
+				mActivity.mAdapterData.addAll((ArrayList<HashMap<String, String>>) results.values);
+				mActivity.mAdapter.notifyDataSetChanged();
+			} else {
+				mActivity.mList.setFilterText("");
+			}
 		}
 	}
 }
