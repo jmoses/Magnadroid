@@ -10,10 +10,10 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -23,6 +23,7 @@ public class SongController extends RelativeLayout {
 	private static final String TAG = "SongController";
 
 	private ToggleImageButton mPlayPauseBtn;
+	private ImageView mCloseButton;
 	private SeekBar mSeekBar;
 
 	private MediaPlayer mMediaPlayer = new MediaPlayer();
@@ -31,6 +32,8 @@ public class SongController extends RelativeLayout {
 
 	private PowerManager mPowerManager;
 	private WakeLock mWakeLock;
+
+	private boolean mIsPrepared = false;
 
 	public SongController(Context context) {
 		this(context, null);
@@ -44,13 +47,17 @@ public class SongController extends RelativeLayout {
 
 		mSeekBar = (SeekBar) findViewById(R.id.seekbar);
 		mPlayPauseBtn = (ToggleImageButton) findViewById(R.id.playpause);
+		mCloseButton = (ImageView) findViewById(R.id.close);
 
 		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-				if (fromUser) {
-					mMediaPlayer.seekTo(progress);
-					mMediaPlayer.start();
+				if (fromUser && mIsPrepared) {
+					try {
+						mMediaPlayer.seekTo(progress);
+						mMediaPlayer.start();
+					} catch (IllegalStateException e) {
+					}
 				}
 			}
 
@@ -60,6 +67,13 @@ public class SongController extends RelativeLayout {
 
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
+
+		mCloseButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				destroy();
 			}
 		});
 
@@ -78,11 +92,6 @@ public class SongController extends RelativeLayout {
 
 		mPowerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		mWakeLock = mPowerManager.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, TAG);
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -164,6 +173,7 @@ public class SongController extends RelativeLayout {
 	}
 
 	private class MediaHandler implements MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnSeekCompleteListener {
+
 		@Override
 		public void onBufferingUpdate(MediaPlayer mp, int percent) {
 			percent = percent * (mSeekBar.getMax() / 100);
@@ -185,6 +195,7 @@ public class SongController extends RelativeLayout {
 			freeWakeLock();
 			mWakeLock.acquire();
 			mSeekThread.start();
+			mIsPrepared = true;
 		}
 
 		@Override

@@ -3,6 +3,7 @@ package com.evancharlton.magnatune;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -18,12 +19,12 @@ public class HTTPThread extends Thread {
 	private String mUrl;
 	private String mLocal;
 	private int mStatus = STATUS_PENDING;
-	private Handler mHandler;
+	private SoftReference<Handler> mHandler;
 
 	public HTTPThread(String url, String local, Handler handler) {
 		mUrl = url;
 		mLocal = local;
-		mHandler = handler;
+		mHandler = new SoftReference<Handler>(handler);
 	}
 
 	@Override
@@ -63,7 +64,10 @@ public class HTTPThread extends Thread {
 		synchronized (this) {
 			mStatus = STATUS_FINISHED;
 		}
-		mHandler.sendEmptyMessage(STATUS_FINISHED);
+		Handler handler = getHandler();
+		if (handler != null) {
+			handler.sendEmptyMessage(STATUS_FINISHED);
+		}
 	}
 
 	public int getStatus() {
@@ -81,11 +85,14 @@ public class HTTPThread extends Thread {
 	}
 
 	public void setHandler(Handler handler) {
-		mHandler = handler;
+		mHandler = new SoftReference<Handler>(handler);
 	}
 
 	public Handler getHandler() {
-		return mHandler;
+		if (mHandler != null) {
+			return mHandler.get();
+		}
+		return null;
 	}
 
 	@Override

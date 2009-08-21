@@ -11,10 +11,22 @@
 		android:layout_height="48px"
 		magnatune:imageOn="@drawable/playback_play"
 		magnatune:imageOff="@drawable/playback_pause"
+		android:focusable="true"
+		android:clickable="true"
+	/>
+	<ImageView
+		android:id="@+id/close"
+		android:layout_alignParentRight="true"
+		android:layout_width="48px"
+		android:layout_height="48px"
+		android:src="@drawable/close"
+		android:focusable="true"
+		android:clickable="true"
 	/>
 	<SeekBar
 		android:id="@+id/seekbar"
 		android:layout_toRightOf="@+id/playpause"
+		android:layout_toLeftOf="@+id/close"
 		android:paddingTop="10px"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
