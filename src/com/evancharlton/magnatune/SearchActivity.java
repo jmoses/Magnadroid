@@ -137,6 +137,7 @@ public class SearchActivity extends LazyActivity {
 		mLoadTask = newLoadTask();
 		setTaskActivity();
 		if (mLoadTask.getStatus() == AsyncTask.Status.PENDING) {
+			mPage = 1;
 			mAdapterData.clear();
 			mAdapter.notifyDataSetChanged();
 			mLoadTask.execute(mQuery.getText().toString().trim());
