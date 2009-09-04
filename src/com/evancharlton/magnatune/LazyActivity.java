@@ -23,7 +23,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -66,6 +68,8 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 		mList.setFastScrollEnabled(true);
 		mList.setTextFilterEnabled(true);
 
+		// setEmptyView(R.layout.loading);
+
 		restoreState();
 
 		if (mLoadTask == null) {
@@ -76,6 +80,14 @@ public abstract class LazyActivity extends MagnatuneActivity implements OnItemCl
 		if (mLoadTask != null && mLoadTask.getStatus() == AsyncTask.Status.PENDING) {
 			mLoadTask.execute();
 		}
+	}
+
+	protected void setEmptyView(View v) {
+		mList.setEmptyView(v);
+	}
+
+	protected void setEmptyView(int resId) {
+		setEmptyView(LayoutInflater.from(this).inflate(resId, null));
 	}
 
 	protected String format(int resId, Object... args) {

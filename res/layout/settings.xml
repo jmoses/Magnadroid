@@ -11,4 +11,13 @@
 		android:summary="@string/email_address_summary"
 		android:inputType="textEmailAddress"
 	/>
+	<PreferenceScreen
+		android:key="@null"
+		android:title="@string/wifi_settings"
+		android:summary="@string/wifi_settings_summary"
+	>
+		<intent
+			android:action="android.settings.WIRELESS_SETTINGS"
+		/>
+	</PreferenceScreen>
 </PreferenceScreen>
