@@ -12,6 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 
 public class MagnatuneAPI {
+	// don't use my API key--go get your own for free here:
+	// http://evancharlton.com/magnatune/account/create/
 	public static final String API_KEY = "cd7e283004d6bd87df6ec7d975e39e116e4d1d8a";
 	public static final String API_BASE = "http://mobileapi.magnatune.com/" + API_KEY;
 	public static final String EXTRA_GROUP = "group";
